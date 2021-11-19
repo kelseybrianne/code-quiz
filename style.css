@@ -4,7 +4,7 @@ header {
     justify-content: space-between;
 }
 
-main {
+main, .questions {
     padding: 20px;
     margin: 0 auto;
     text-align: center;
@@ -29,4 +29,10 @@ button {
     width: 5em;
     height: 3em;
     background-color: gray;
+}
+
+.questions {
+    background-color: rgb(205, 205, 205);
+    width: 40em;
+    height: 40em;
 }
