@@ -3,20 +3,30 @@ var startBtn = document.getElementById("start-game");
 var intro = document.getElementById("intro");
 var questionsEl = document.getElementById("questions");
 var initialsEl = document.getElementById("enter-initials");
-var highscores = document.getElementById("highscores");
+var highscoresEl = document.getElementById("highscores");
+var hsListEl = document.getElementById("highscore-list");
 var rightOrWrong = document.getElementById("right-or-wrong")
+var formEl = document.getElementById("form")
+var navBtns = document.getElementById("final-nav");
+var hsPage = document.getElementById("highscore-page");
+var newInput;
 var index = 0;
 var newDiv;
+var allDoneEl;
 var multipleChoiceOptions;
 var allQuestions;
 var intervalId;
-var newButton;
+var submitBtn;
 var highscoreEl;
+var newForm;
 
 var time = "Time: ";
 var count = 60;
+var score;
 var answeredCorrectly = 0;
 var intervalId;
+var highscores = [];
+timer.textContent = time + count;
 
 
 
@@ -25,36 +35,97 @@ function endGame() {
     questionsEl.textContent = "";
     clearInterval(intervalId);
 
-    var score = count + answeredCorrectly;
+    score = count + answeredCorrectly;
     
-    newDiv = document.createElement("h2");
-    newDiv.textContent = "All done!"  
-    initialsEl.appendChild(newDiv);
-    newPara = document.createElement("p");
-    newPara.textContent = `Your final score is ${score}`
+    allDoneEl = document.createElement("h2");
+    allDoneEl.textContent = "All done!"  
+    initialsEl.appendChild(allDoneEl);
+    var newP = document.createElement("p");
+    newP.textContent = `Your final score is ${score}.`
     console.log(count);
-    initialsEl.appendChild(newPara);
-    var enterInitials = document.createElement("p");
-    enterInitials.setAttribute("class", "inline");
-    enterInitials.textContent = "Enter your initials: "
-    initialsEl.appendChild(enterInitials);
-    var newInput = document.createElement("input");
-    initialsEl.appendChild(newInput);
-    newButton = document.createElement("button");
-    newButton.textContent = "Submit";
-    initialsEl.appendChild(newButton);
+    initialsEl.appendChild(newP);
+    var enterInitialsEl = document.createElement("label");
+    enterInitialsEl.setAttribute("class", "inline");
+    enterInitialsEl.textContent = "Enter your initials: "
+    formEl.appendChild(enterInitialsEl);
+    
+    newInput = document.createElement("input");
+    formEl.appendChild(newInput);
+    submitBtn = document.createElement("button");
+    submitBtn.textContent = "Submit";
+    formEl.appendChild(submitBtn);
 
-    newButton.addEventListener("click", renderHighscores);
-    return;
+    formEl.addEventListener("submit", submit);
+  
+    
 }
+
+var highscoreText
+function submit() {
+    event.preventDefault();
+    highscoreText = newInput.value.trim() + " - " + score;
+
+    if (highscoreText === "") {
+        return;
+    }
+
+    highscores.push(highscoreText);
+    // newInput.value = "";
+
+    storeHighscores();
+    renderHighscores();
+}
+
+function storeHighscores () {
+    localStorage.setItem("highscores", JSON.stringify(highscores));
+};
 
 function renderHighscores () {
     initialsEl.setAttribute("style", "display: none;");
+    formEl.setAttribute("style", "display: none;");
+  
+    timer.setAttribute("class", "hidden");
     highscoreEl = document.createElement("h2");
     highscoreEl.textContent = "Highscores";
-    highscores.appendChild(highscoreEl);
+    highscoresEl.appendChild(highscoreEl);
+    var goBackBtn = document.createElement("button");
+    goBackBtn.textContent = "Go Back";
+    navBtns.appendChild(goBackBtn);
+    var clearHighscoresBtn = document.createElement("button");
+    clearHighscoresBtn.textContent = "Clear Highscores"
+    navBtns.appendChild(clearHighscoresBtn);
+    hsListEl.classList.remove("hidden");
+    
+    for (var i=0; i<highscores.length; i++) {
+        var highscore = highscores[i];
+        
+        var newHighscore = document.createElement("li");
+        newHighscore.textContent = highscore;
+        hsListEl.appendChild(newHighscore);
+    }
+
+    clearHighscoresBtn.addEventListener("click", function() {
+        highscores = []
+        newHighscore.textContent = "";
+        hsListEl.setAttribute("class", "hidden");
+    })
+
+    goBackBtn.addEventListener("click", function() {
+        intro.classList.remove("hidden");
+        highscoreEl.setAttribute("class","hidden");
+        hsListEl.setAttribute("class","hidden");
+        formEl.setAttribute("class","hidden");
+        navBtns.setAttribute("class","hidden");
+    })
+}
 
 
+function init() {
+    var storedHighscores = JSON.parse(localStorage.getItem("highscores"));
+    if (storedHighscores !== null) {
+        highscores = storedHighscores;
+    }
+    renderHighscores();
 }
 
 
@@ -64,7 +135,7 @@ function displayNextQuest() {
     questionsEl.textContent = "";
     newDiv = document.createElement("h2");
     newDiv.textContent = questions[index].question;
-    console.log(questions[index].question)
+    console.log(questions[index].question);
     questionsEl.appendChild(newDiv);
     newDiv.setAttribute("data-state", "visible");
     
@@ -77,13 +148,9 @@ function displayNextQuest() {
         multipleChoiceOptions.setAttribute("data-state", "visible")
         multipleChoiceOptions.setAttribute("id", "option-button");
          
-    
-        
         multipleChoiceOptions.addEventListener("click", clickAnswer);
         
     }
-    
-    // questionsEl.textContent = questOne.question;
 };
 
 function clickAnswer() {
@@ -162,6 +229,7 @@ function startTimer() {
         timer.textContent = time + count;
         if (count === 0) {
             clearInterval(intervalId);
+            endGame();
         }
     }, 1000);
 
@@ -174,7 +242,7 @@ function startGame() {
     startTimer();
     
     // Hide intro
-    intro.setAttribute("style", "display: none;")
+    intro.setAttribute("class", "hidden")
 
     displayNextQuest();
 
