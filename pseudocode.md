@@ -17,30 +17,36 @@
 # What kinds of actions does my application need to do?
 
 - start action
-function startGame () { ... }
+function startGame () { ... }✅
 
-    - hide welcome
+    - hide welcome:
     function hideWelcome () { ... } ✅
 
-    - display the next question
-    function displayNextQuestion () { ... }
+    - display the next question:
+    function displayNextQuestion () { ... } ✅
 
     - start the countdown timer ✅
 
 
-- answer a question
+- answer a question ✅
 
-    - validate the users choice (display the answer result)
+    - validate the users choice (display the answer result)✅
 
-        - IF the choice is wrong, subtract time by 10
+        - IF the choice is wrong, subtract time by 10 ✅
 
-    - display the next question
+    - display the next question✅
 
-    - display the answer result
+    - display the answer result✅
 
 - end the game
 
-    - Stop the timer from counting down (clearInterval)
+    - Stop the timer from counting down (clearInterval) ✅
+
+    - Display All done/Time's up page ✅
+
+- Highscores
+
+    - Display HighScores page
 
 
 

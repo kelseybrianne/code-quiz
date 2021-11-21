@@ -2,57 +2,125 @@ var timer = document.getElementById("timer");
 var startBtn = document.getElementById("start-game");
 var intro = document.getElementById("intro");
 var questionsEl = document.getElementById("questions");
-var index = 0
+var initialsEl = document.getElementById("enter-initials");
+var highscores = document.getElementById("highscores");
+var rightOrWrong = document.getElementById("right-or-wrong")
+var index = 0;
+var newDiv;
+var multipleChoiceOptions;
+var allQuestions;
+var intervalId;
+var newButton;
+var highscoreEl;
+
+var time = "Time: ";
+var count = 60;
+var answeredCorrectly = 0;
+var intervalId;
+
+
+
+function endGame() {
+    // make this page an empty string when first opened to clear the last page
+    questionsEl.textContent = "";
+    clearInterval(intervalId);
+
+    var score = count + answeredCorrectly;
+    
+    newDiv = document.createElement("h2");
+    newDiv.textContent = "All done!"  
+    initialsEl.appendChild(newDiv);
+    newPara = document.createElement("p");
+    newPara.textContent = `Your final score is ${score}`
+    console.log(count);
+    initialsEl.appendChild(newPara);
+    var enterInitials = document.createElement("p");
+    enterInitials.setAttribute("class", "inline");
+    enterInitials.textContent = "Enter your initials: "
+    initialsEl.appendChild(enterInitials);
+    var newInput = document.createElement("input");
+    initialsEl.appendChild(newInput);
+    newButton = document.createElement("button");
+    newButton.textContent = "Submit";
+    initialsEl.appendChild(newButton);
+
+    newButton.addEventListener("click", renderHighscores);
+    return;
+}
+
+function renderHighscores () {
+    initialsEl.setAttribute("style", "display: none;");
+    highscoreEl = document.createElement("h2");
+    highscoreEl.textContent = "Highscores";
+    highscores.appendChild(highscoreEl);
+
+
+}
 
 
 // Display next Question
 function displayNextQuest() {
-
-    var newDiv = document.createElement("h2");
+    // Clears out the page each time you go to another section
+    questionsEl.textContent = "";
+    newDiv = document.createElement("h2");
     newDiv.textContent = questions[index].question;
+    console.log(questions[index].question)
     questionsEl.appendChild(newDiv);
-    newDiv.setAttribute("data-state", "hidden");
-
-        
+    newDiv.setAttribute("data-state", "visible");
+    
+    
     for(var i = 0; i < questions[index].answers.length; i++) {
-            
-        var multipleChoiceOptions = document.createElement("button");
+        
+        multipleChoiceOptions = document.createElement("button");
         multipleChoiceOptions.textContent = questions[index].answers[i];
         questionsEl.appendChild(multipleChoiceOptions);
-        multipleChoiceOptions.setAttribute("data-state", "hidden");
-
+        multipleChoiceOptions.setAttribute("data-state", "visible")
+        multipleChoiceOptions.setAttribute("id", "option-button");
+         
+    
+        
         multipleChoiceOptions.addEventListener("click", clickAnswer);
-
+        
     }
     
     // questionsEl.textContent = questOne.question;
 };
 
 function clickAnswer() {
-    console.log(this);
 
+    if(newDiv.dataset.state === "visible" && multipleChoiceOptions.dataset.state === "visible") {
+        newDiv.setAttribute("data-state", "hidden");
+        newDiv.setAttribute("style", "display: none;")
+        multipleChoiceOptions.setAttribute("data-state", "hidden");
+        multipleChoiceOptions.setAttribute("style", "display: none;")
 
-    
-    if (this.textContent === [index].correct) {
+    }
+   
+    if (this.textContent === questions[index].correct) {
         
-        document.getElementById("right-or-wrong").textContent = "Correct!"
+        rightOrWrong.textContent = "Correct!";
+        
+        answeredCorrectly++;
         
     } else {
         
-        document.getElementById("right-or-wrong").textContent = "Incorrect!"
+        rightOrWrong.textContent = "Incorrect!";
+        count -=10;
         
+    } 
+    rightOrWrong.style = "display:block";
+    setTimeout(function () {
+        rightOrWrong.style = "display: none";
+    }, 1000);
+
+    index++;
+    if(index === questions.length) {
+        endGame();
+    } else{
+        displayNextQuest();
     }
-    index++
-    
-    displayNextQuest();
 };
 
-var subtractTen
-var endGame
-
-var time = "Time: ";
-var count = 60;
-var intervalId;
 
 // Questions to be added to the DOM
 var questions = [
@@ -89,8 +157,8 @@ startBtn.addEventListener("click", startGame);
 // Start timer, clear it at 0 and end game
 function startTimer() {
 
-    var intervalId = setInterval(function () {
-        count -= 1;
+    intervalId = setInterval(function () {
+        count--;
         timer.textContent = time + count;
         if (count === 0) {
             clearInterval(intervalId);
