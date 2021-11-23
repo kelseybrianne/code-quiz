@@ -65,7 +65,7 @@ var timer = document.getElementById("timer");
 
 
     // var highscoreText
-    function submit() {
+    function submit(event) {
         console.log(highscores);
         event.preventDefault();
         console.log(highscoreText);
@@ -90,6 +90,12 @@ var timer = document.getElementById("timer");
     //     localStorage.setItem("highscores", JSON.stringify(highscores));
         
     // };
+    document.getElementById("view-highscores").addEventListener("click", function() {
+
+renderHighscores();
+intro.setAttribute("class", "hidden");
+
+    });
 
     function renderHighscores () {
         var storedHighscores = JSON.parse(localStorage.getItem("highscores"));
