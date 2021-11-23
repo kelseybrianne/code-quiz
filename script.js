@@ -28,7 +28,10 @@ var timer = document.getElementById("timer");
     var highscores = [];
     timer.textContent = time + count;
     console.log(highscores);
-
+    var storedHighscores = JSON.parse(localStorage.getItem("highscores"));
+    if (storedHighscores !== null) {
+        highscores = storedHighscores;
+    }
 
     function endGame() {
         // make this page an empty string when first opened to clear the last page
@@ -66,8 +69,7 @@ var timer = document.getElementById("timer");
         console.log(highscores);
         event.preventDefault();
         console.log(highscoreText);
-        var highscoreText = newInput.value.trim().toUpperCase();
-        //  + " - " + score;
+        var highscoreText = newInput.value.trim().toUpperCase() + " - " + score;
         
         if (newInput.value.trim() === "") {
             return;
@@ -119,17 +121,32 @@ var timer = document.getElementById("timer");
         }
 
         clearHighscoresBtn.addEventListener("click", function() {
+            console.log(highscores);
+            hsListEl.textContent = "";
+            highscoreEl.textContent = "";
+            highscoresEl.textContent = "";
+            navBtns.textContent = "";
             highscores = []
+            console.log(highscores);
+            localStorage.setItem("highscores", JSON.stringify(highscores));
+            renderHighscores();
+            console.log(highscores)
+            var storedHighscores = JSON.parse(localStorage.getItem("highscores"));
+            if (storedHighscores !== null) {
+                highscores = storedHighscores;
+            }
+            console.log(highscores);
             newHighscore.textContent = "";
-            hsListEl.setAttribute("class", "hidden");
+            // hsListEl.setAttribute("class", "hidden");
+            // highscoreEl.setAttribute("class","hidden");
         })
 
         goBackBtn.addEventListener("click", function() {
-            intro.classList.remove("hidden");
-            highscoreEl.setAttribute("class","hidden");
-            hsListEl.setAttribute("class","hidden");
-            formEl.setAttribute("class","hidden");
-            navBtns.setAttribute("class","hidden");
+            location.reload();
+            // intro.classList.remove("hidden");
+            // highscoreEl.setAttribute("class","hidden");
+            // hsListEl.setAttribute("class","hidden");
+            // formEl.setAttribute("class","hidden");
         })
     };
 
