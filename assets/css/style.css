@@ -17,6 +17,7 @@ h1 {
     padding: 15px 5px;
 
 }
+
 h2 {
     line-height: 1.2;
     font-size: 1.3rem;
@@ -58,16 +59,12 @@ button:hover {
     display: block;
 }
 
-#enter-initials {
+#enter-initials, #questions {
     text-align: left;
 }
 
 #enter-initials h2{
     padding-left: 0px;
-}
-
-#questions {
-    text-align: left;
 }
 
 .rightOrWrong {

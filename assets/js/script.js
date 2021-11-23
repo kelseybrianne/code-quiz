@@ -1,226 +1,161 @@
 var timer = document.getElementById("timer");
-    var startBtn = document.getElementById("start-game");
-    var intro = document.getElementById("intro");
-    var questionsEl = document.getElementById("questions");
-    var initialsEl = document.getElementById("enter-initials");
-    var highscoresEl = document.getElementById("highscores");
-    var hsListEl = document.getElementById("highscore-list");
-    var rightOrWrong = document.getElementById("right-or-wrong")
-    var formEl = document.getElementById("form")
-    var navBtns = document.getElementById("final-nav");
-    var hsPage = document.getElementById("highscore-page");
-    var newInput;
-    var index = 0;
-    var newDiv;
-    var allDoneEl;
-    var multipleChoiceOptions;
-    var allQuestions;
-    var intervalId;
-    var submitBtn;
-    var highscoreEl;
-    var newForm;
+var intro = document.getElementById("intro");
+var questionsEl = document.getElementById("questions");
+var initialsEl = document.getElementById("enter-initials");
+var highscoresEl = document.getElementById("highscores");
+var hsListEl = document.getElementById("highscore-list");
+var rightOrWrong = document.getElementById("right-or-wrong")
+var formEl = document.getElementById("form")
+var navBtns = document.getElementById("final-nav");
+var newInput;
+var intervalId;
+var score;
 
-    var time = "Time: ";
-    var count = 60;
-    var score;
-    var answeredCorrectly = 0;
-    var intervalId;
-    var highscores = [];
-    timer.textContent = time + count;
-    console.log(highscores);
+var index = 0;
+var time = "Time: ";
+var count = 60;
+var answeredCorrectly = 0;
+var highscores = [];
+timer.textContent = time + count;
+
+var storedHighscores = JSON.parse(localStorage.getItem("highscores"));
+if (storedHighscores !== null) {
+    highscores = storedHighscores;
+}
+
+// Create a button in the top left corner for user to view highscores at any point in time.
+document.getElementById("view-highscores").addEventListener("click", function() {
+    
+    renderHighscores();
+    intro.setAttribute("class", "hidden");
+    questionsEl.setAttribute("class", "hidden");
+    
+});
+
+// Show list of high scores and two buttons, one clicked to go back to the start of the quiz and the other to clear the highscores.
+function renderHighscores () {
     var storedHighscores = JSON.parse(localStorage.getItem("highscores"));
     if (storedHighscores !== null) {
         highscores = storedHighscores;
     }
-
-    function endGame() {
-        // make this page an empty string when first opened to clear the last page
-        questionsEl.textContent = "";
-        clearInterval(intervalId);
-
-        score = count + answeredCorrectly;
+    
+    initialsEl.setAttribute("style", "display: none;");
+    formEl.setAttribute("style", "display: none;");
+    
+    timer.setAttribute("class", "hidden");
+    var highscoreEl = document.createElement("h2");
+    highscoreEl.textContent = "Highscores";
+    highscoresEl.appendChild(highscoreEl);
+    var goBackBtn = document.createElement("button");
+    goBackBtn.textContent = "Go Back";
+    navBtns.appendChild(goBackBtn);
+    var clearHighscoresBtn = document.createElement("button");
+    clearHighscoresBtn.textContent = "Clear Highscores"
+    navBtns.appendChild(clearHighscoresBtn);
+    hsListEl.classList.remove("hidden");
+    
+    for (var i=0; i<highscores.length; i++) {
+        var highscore = highscores[i];
         
-        allDoneEl = document.createElement("h2");
-        allDoneEl.textContent = "All done!"  
-        initialsEl.appendChild(allDoneEl);
-        var newP = document.createElement("p");
-        newP.textContent = `Your final score is ${score}.`
-        console.log(count);
-        initialsEl.appendChild(newP);
-        var enterInitialsEl = document.createElement("label");
-        enterInitialsEl.setAttribute("class", "inline");
-        enterInitialsEl.textContent = "Enter your initials: "
-        formEl.appendChild(enterInitialsEl);
-        
-        newInput = document.createElement("input");
-        formEl.appendChild(newInput);
-        submitBtn = document.createElement("button");
-        submitBtn.textContent = "Submit";
-        formEl.appendChild(submitBtn);
-        
-        formEl.addEventListener("submit", submit);
-        
-        console.log(highscores);
+        var newHighscore = document.createElement("li");
+        newHighscore.textContent = highscore;
+        hsListEl.appendChild(newHighscore);
     }
-
-
-    // var highscoreText
-    function submit(event) {
-        console.log(highscores);
-        event.preventDefault();
-        console.log(highscoreText);
-        var highscoreText = newInput.value.trim().toUpperCase() + " - " + score;
+    
+    clearHighscoresBtn.addEventListener("click", function() {
         
-        if (newInput.value.trim() === "") {
-            return;
-        }
-        
-        console.log(highscores);
-        highscores.push(highscoreText);
-        console.log(highscores);
-        
-        // console.log(highscores);
-        // newInput.value = "";
-        
+        hsListEl.textContent = "";
+        highscoreEl.textContent = "";
+        highscoresEl.textContent = "";
+        navBtns.textContent = "";
+        highscores = []
+    
         localStorage.setItem("highscores", JSON.stringify(highscores));
         renderHighscores();
-    }
-
-    // function storeHighscores () {
-    //     localStorage.setItem("highscores", JSON.stringify(highscores));
         
-    // };
-    document.getElementById("view-highscores").addEventListener("click", function() {
-
-renderHighscores();
-intro.setAttribute("class", "hidden");
-
-    });
-
-    function renderHighscores () {
         var storedHighscores = JSON.parse(localStorage.getItem("highscores"));
         if (storedHighscores !== null) {
             highscores = storedHighscores;
         }
-
-        initialsEl.setAttribute("style", "display: none;");
-        formEl.setAttribute("style", "display: none;");
+    })
     
-        timer.setAttribute("class", "hidden");
-        highscoreEl = document.createElement("h2");
-        highscoreEl.textContent = "Highscores";
-        highscoresEl.appendChild(highscoreEl);
-        var goBackBtn = document.createElement("button");
-        goBackBtn.textContent = "Go Back";
-        navBtns.appendChild(goBackBtn);
-        var clearHighscoresBtn = document.createElement("button");
-        clearHighscoresBtn.textContent = "Clear Highscores"
-        navBtns.appendChild(clearHighscoresBtn);
-        hsListEl.classList.remove("hidden");
-        
-        for (var i=0; i<highscores.length; i++) {
-            var highscore = highscores[i];
-            
-            var newHighscore = document.createElement("li");
-            newHighscore.textContent = highscore;
-            hsListEl.appendChild(newHighscore);
-        }
+    goBackBtn.addEventListener("click", function() {
+        location.reload();
+    })
+};
 
-        clearHighscoresBtn.addEventListener("click", function() {
-            console.log(highscores);
-            hsListEl.textContent = "";
-            highscoreEl.textContent = "";
-            highscoresEl.textContent = "";
-            navBtns.textContent = "";
-            highscores = []
-            console.log(highscores);
-            localStorage.setItem("highscores", JSON.stringify(highscores));
-            renderHighscores();
-            console.log(highscores)
-            var storedHighscores = JSON.parse(localStorage.getItem("highscores"));
-            if (storedHighscores !== null) {
-                highscores = storedHighscores;
-            }
-            console.log(highscores);
-            newHighscore.textContent = "";
-            // hsListEl.setAttribute("class", "hidden");
-            // highscoreEl.setAttribute("class","hidden");
-        })
-
-        goBackBtn.addEventListener("click", function() {
-            location.reload();
-            // intro.classList.remove("hidden");
-            // highscoreEl.setAttribute("class","hidden");
-            // hsListEl.setAttribute("class","hidden");
-            // formEl.setAttribute("class","hidden");
-        })
-    };
-
-
-
-
-    // Display next Question
-    function displayNextQuest() {
-        // Clears out the page each time you go to another section
-        questionsEl.textContent = "";
-        newDiv = document.createElement("h2");
-        newDiv.textContent = questions[index].question;
-        console.log(questions[index].question);
-        questionsEl.appendChild(newDiv);
-        // newDiv.setAttribute("data-state", "visible");
-        
-        
-        for(var i = 0; i < questions[index].answers.length; i++) {
-            
-            multipleChoiceOptions = document.createElement("button");
-            multipleChoiceOptions.textContent = questions[index].answers[i];
-            questionsEl.appendChild(multipleChoiceOptions);
-            multipleChoiceOptions.setAttribute("data-state", "visible")
-            multipleChoiceOptions.setAttribute("id", "option-button");
-            
-            multipleChoiceOptions.addEventListener("click", clickAnswer);
-            
-        }
-    };
-
-    function clickAnswer() {
-
-        if(newDiv.dataset.state === "visible" && multipleChoiceOptions.dataset.state === "visible") {
-            newDiv.setAttribute("data-state", "hidden");
-            newDiv.setAttribute("style", "display: none;")
-            multipleChoiceOptions.setAttribute("data-state", "hidden");
-            multipleChoiceOptions.setAttribute("style", "display: none;")
-
-        }
+// Save initials and highscore to localStorage and show list of highscores when submitted
+function submit(event) {
+    event.preventDefault();
+    var highscoreText = newInput.value.trim().toUpperCase() + " - " + score;
     
-        if (this.textContent === questions[index].correct) {
-            
-            rightOrWrong.textContent = "Correct!";
-            
-            answeredCorrectly++;
-            
-        } else {
-            
-            rightOrWrong.textContent = "Incorrect!";
-            count -=10;
-            
-        } 
-        rightOrWrong.style = "display:block";
-        setTimeout(function () {
-            rightOrWrong.style = "display: none";
-        }, 1000);
+    if (newInput.value.trim() === "") {
+        return;
+    }
 
-        index++;
-        if(index === questions.length) {
-            endGame();
-        } else{
-            displayNextQuest();
-        }
-    };
+    highscores.push(highscoreText);
+    
+    localStorage.setItem("highscores", JSON.stringify(highscores));
 
+    renderHighscores();
+}
+    
+// Display the final score and create an input for user to save their highscore.
+function endGame() {
+    // Make this page an empty string when first opened to clear the last page
+    questionsEl.textContent = "";
+    clearInterval(intervalId);
 
-    // Questions to be added to the DOM
-    var questions = [
+    score = count + answeredCorrectly;
+    
+    var allDoneEl = document.createElement("h2");
+    allDoneEl.textContent = "All done!"  
+    initialsEl.appendChild(allDoneEl);
+    var newP = document.createElement("p");
+    newP.textContent = `Your final score is ${score}.`
+    initialsEl.appendChild(newP);
+    var enterInitialsEl = document.createElement("label");
+    enterInitialsEl.setAttribute("class", "inline");
+    enterInitialsEl.textContent = "Enter your initials: "
+    formEl.appendChild(enterInitialsEl);
+    
+    newInput = document.createElement("input");
+    formEl.appendChild(newInput);
+    var submitBtn = document.createElement("button");
+    submitBtn.textContent = "Submit";
+    formEl.appendChild(submitBtn);
+    
+    formEl.addEventListener("submit", submit);
+}
+
+// When you answer every question, display the next question and whether the previously selected answer was right or wong. End the game after the last question.
+function clickAnswer() {
+    if (this.textContent === questions[index].correct) {
+        rightOrWrong.textContent = "Correct!";
+        answeredCorrectly++;
+    } else {
+        rightOrWrong.textContent = "Incorrect!";
+        count -=10;
+    } 
+
+    rightOrWrong.style = "display:block";
+
+    // Make the correct/incorrect statement disappear after one second
+    setTimeout(function () {
+        rightOrWrong.style = "display: none";
+    }, 1000);
+    
+    // End the game when you run out of questions
+    index++;
+    if(index === questions.length) {
+        endGame();
+    } else{
+        displayNextQuest();
+    }
+};
+
+// Questions to be added to the DOM
+var questions = [
     {
         question: "Which of the following is not an HTML tag?",
         answers: ["<footer>", "<!DOCTYPE", "<p>", "<paragraph>"],
@@ -246,34 +181,53 @@ intro.setAttribute("class", "hidden");
         answers: ["True", "False"],
         correct: "False"
     }];
+    
+// Display next Question
+function displayNextQuest() {
+    // Clears out the page each time you go to another section
+    questionsEl.textContent = "";
 
-
-    // Add Start Quiz button click functionality
-    startBtn.addEventListener("click", startGame);
-
-    // Start timer, clear it at 0 and end game
-    function startTimer() {
-
-        intervalId = setInterval(function () {
-            count--;
-            timer.textContent = time + count;
-            if (count === 0) {
-                clearInterval(intervalId);
-                endGame();
-            }
-        }, 1000);
-
+    var newDiv = document.createElement("h2");
+    newDiv.textContent = questions[index].question;
+    questionsEl.appendChild(newDiv);
+    
+    // Put the answer to each question in its own button and each with the same click event functionality
+    for(var i = 0; i < questions[index].answers.length; i++) {
+        var multipleChoiceOptions = document.createElement("button");
+        multipleChoiceOptions.textContent = questions[index].answers[i];
+        questionsEl.appendChild(multipleChoiceOptions);
+        multipleChoiceOptions.setAttribute("data-state", "visible")
+        multipleChoiceOptions.setAttribute("id", "option-button");
+        
+        multipleChoiceOptions.addEventListener("click", clickAnswer);
     }
+};
+    
+// Start timer, clear it and end game at 0
+function startTimer() {
+    
+    intervalId = setInterval(function () {
+        count--;
+        timer.textContent = time + count;
+        if (count === 0) {
+            clearInterval(intervalId);
+            endGame();
+        }
+    }, 1000);
+    
+}
 
+// Start timer, hide intro, and display next question
+function startGame() {
+    
+    startTimer();
+    
+    // Hide intro
+    intro.setAttribute("class", "hidden")
+    
+    displayNextQuest();
+    
+};
 
-    // Start timer, hide intro, and display next question
-    function startGame() {
-        
-        startTimer();
-        
-        // Hide intro
-        intro.setAttribute("class", "hidden")
-
-        displayNextQuest();
-
-    };
+// Add Start Quiz button click functionality
+document.getElementById("start-game").addEventListener("click", startGame);
