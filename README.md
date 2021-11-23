@@ -2,11 +2,11 @@
 
 ## Description
 
-A quiz made for coders who want to test their knowledge in HTML, CSS, and Javascript. The quiz contains five multiple choice questions and must be completed in 60 seconds or less. A score is calculated based off of how much time is left and points are added for any questions that were answered correctly. Scores are saved at the end for you to compare with your new score each time you play.
+A quiz designed for coders who would like to put their knowledge of HTML, CSS, and Javascript to the test. This quiz contains five multiple choice questions and must be completed in 60 seconds or less. A score is calculated based on how much time is left and how many questions were answered correctly. Your score is saved at the end with your provided initials and added to the highscore score board.
 
 ## Screenshot
 
-
+![Deployed Code Quiz Application](./assets/images/code-quiz-screenshot.png)
 
 ## Link
 
